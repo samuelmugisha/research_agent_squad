@@ -357,8 +357,8 @@ choose their own password.
 
 ### 🔎 Run a research
 
-1. ✍️ On the **Research** tab, type a question, e.g. *"What are the main approaches to
-   solid-state battery manufacturing in 2026?"* (3–500 characters).
+1. ✍️ On the **Research** tab, type a question, e.g. *"How has digitalisation helped to
+   reduce poverty in Uganda?"* (3–500 characters).
 2. ☑️ Pick sources with the **search in:** checkboxes: **Web**, **Academic papers**,
    **Knowledge base**, **Past research**. At least one must be selected.
 3. 🚀 Press **Send**. Each agent card lights up as it works, and the activity feed shows
@@ -404,54 +404,102 @@ individual test cases. See [Evaluation suite](#evaluation-suite).
 <a id="use-cases"></a>
 ## 💡 Example use cases
 
+All examples below are real runs (gpt-4o-mini via OpenRouter).
+
 <details open>
-<summary><b>🌐 A. Quick market or technology briefing</b> (Web)</summary>
+<summary><b>💻 A. A sector briefing</b> (Web + Academic papers)</summary>
 
-> **Question:** "Current state of heat-pump adoption in the UK" · **Sources:** Web
+> **Question:** "Research about the software industry in Uganda"
 
-Atlas splits this into angles such as adoption figures, policy and grants, and installer
-capacity. You get an executive summary, key findings with figures and dates, an analysis,
-and three recommendations, each claim citing the page it came from.
+Atlas split the question into three angles: *current trends in the software industry*,
+*challenges faced by software developers*, and *the impact of government policies on the
+sector's growth*. Three Scouts searched the web and academic papers in parallel. The cited
+report (14 sources, quality 0.80, 59 s, $0.036) included findings such as:
 
-</details>
-
-<details>
-<summary><b>📚 B. Literature scan</b> (Academic papers)</summary>
-
-> **Question:** "Retrieval-augmented generation for medical question answering" · **Sources:** Academic papers
-
-Scout queries OpenAlex (peer-reviewed) and arXiv (preprints) for papers from the last
-3 years, filtering out off-topic results. The report gains a **Recent Research** section
-listing each key paper's finding with its venue and year; preprints are labelled.
+- Startup funding of **over USD 70 million in 2022, up from USD 6.5 million in 2021**, driven by a young population and government support.
+- The **National Data Centre hosting 68 new applications** for 95 entities.
+- **Talent challenges:** low-quality education and graduates focusing on opportunities abroad.
 
 </details>
 
 <details>
-<summary><b>📁 C. Your documents plus the outside world</b> (Knowledge base + Web)</summary>
+<summary><b>📉 B. A development-policy question</b> (Web + Academic papers)</summary>
 
-> **Upload:** vendor-evaluation notes and a supplier's PDF spec sheet ·
-> **Question:** "How does Supplier X's battery pack compare to industry benchmarks?"
+> **Question:** "How has digitalisation helped to reduce poverty in Uganda?"
+
+The report (13 sources, quality 0.80, 61 s, $0.044) covered:
+
+- Uganda's target of **90% internet connectivity by 2040**.
+- A **US$200 million World Bank investment** in digital infrastructure.
+- Projections of **1.79 million jobs and UGX 14.6 trillion by 2030** from digital reforms.
+
+It also gave the counter-evidence, citing studies that found mobile money had **limited
+impact on savings and agricultural outcomes**. The academic source included a medRxiv
+study on the healthcare-seeking behaviour of mobile phone users in rural Uganda. This is
+the report shown at the top of this page.
+
+</details>
+
+<details>
+<summary><b>🌍 C. A market-opportunity scan</b> (Web + Academic papers)</summary>
+
+> **Question:** "Which are the most lucrative businesses to start in Africa?"
+
+Scouts researched profitable sectors, emerging opportunities and successful startups,
+searching again with new phrasings where the first results were thin. The report
+(13 sources including 2 papers, quality 0.85, 86 s) found:
+
+- **USD 4.5 billion of venture capital across 603 deals in 2023.**
+- The **financial sector at 48% of total deal value**.
+- **Fintech, renewable energy, healthcare and agriculture** as the fastest-growing sectors.
+
+</details>
+
+<details>
+<summary><b>🏞️ D. An impact assessment</b> (Web + Academic papers)</summary>
+
+> **Question:** "How has tourism benefited Uganda?"
+
+Scouts looked at the economic impact, cultural preservation and conservation. The report
+(13 sources, quality 0.80, 63 s) found:
+
+- Tourism contributed **UGX 6.99 trillion (3.3% of GDP) in 2024**, and nature-based tourism supported **over 667,000 jobs**.
+- **International visitors rose 3.7%** in the first half of 2026.
+- **Domestic tourism spending reached UGX 5.41 trillion.**
+
+The two academic sources included a time-series study of tourism and economic growth in Uganda.
+
+</details>
+
+<details>
+<summary><b>🧠 E. Building on earlier research</b> (Past research + Web)</summary>
+
+> **Question:** "What has changed in Uganda's software industry since our earlier research, and what should founders do next?"
+
+For two of its three queries, Scout called `search_past_research` alongside `search_web`.
+For the third, about what founders should do next, it searched the web only. The report
+cites the earlier report as a source (*"[1] Past report: Research about the software
+industry in Uganda"*) next to new web data. For example: *"Startup funding in Uganda
+peaked at over USD 70 million in 2022 but plummeted by 79% to only $10 million in 2023
+[1][3]"*. The earlier figure came from memory and the update from the web.
+
+</details>
+
+<details>
+<summary><b>📁 F. Your documents plus the outside world</b> (Knowledge base + Web)</summary>
+
+> **Upload:** your organisation's field reports and a district development plan (PDF) ·
+> **Question:** "How do our field findings on mobile money compare with national data for Uganda?"
 
 Findings from your files are cited as private documents, linking to the exact PDF page,
-next to public benchmarks from the web.
+next to national statistics and research from the web.
 
 </details>
 
 <details>
-<summary><b>🧠 D. Building on earlier research</b> (Past research + Web)</summary>
+<summary><b>💬 G. Going deeper with follow-ups</b></summary>
 
-> **Question:** "How has UK heat pump adoption changed since our earlier research?"
-
-Scout calls `search_past_research` alongside `search_web`. The report cites the earlier
-heat-pump report (*"[8] Past report: Heat pump adoption in UK homes"*) next to new web
-sources. This is a real run.
-
-</details>
-
-<details>
-<summary><b>💬 E. Going deeper with follow-ups</b></summary>
-
-- *"Expand recommendation 2 into a step-by-step plan."*
+- *"Expand recommendation 2 into a step-by-step plan for a Kampala-based startup."*
 - *"Which findings are weakest or contradicted?"*
 - *"Summarise this for a non-technical executive in 5 bullets."*
 
@@ -532,9 +580,15 @@ sequenceDiagram
 5. **Extract findings.** The model cites result numbers; the code maps them back to real
    URLs, so a URL can never be invented.
 
-🧪 Real example, *"Heat pump adoption in UK homes"*: for consumer attitudes, Scout called
-`search_web` and `search_papers`, judged the results thin, and searched both again. For
-*"current retail price of Tesla Model 3 in the UK"* it called only `search_web`.
+🧪 **Real examples:**
+
+- *"Case studies of digital financial services improving livelihoods in Uganda"*: Scout
+  called `search_web` and `search_papers`, judged the results thin, and searched both
+  again with new phrasings.
+- *"Current exchange rate of the Ugandan shilling to the US dollar"*: it called only
+  `search_web`.
+- *"Peer-reviewed evidence on mobile money and household welfare in Uganda"*: it called
+  only `search_papers`.
 
 🛟 **Safeguards:** a failing tool returns `Search failed: …` to the model instead of
 raising; if no tools are called (or tool calling fails), Scout falls back to every
@@ -575,20 +629,20 @@ Every run records its token usage and **cost in US dollars, broken down by agent
 - 👀 Shown live in the console header, on each report (with a per-agent breakdown), after
   each follow-up answer, and in History.
 
-Real run, *"Microplastics in drinking water health effects"* (web + academic):
+Real run, *"How has digitalisation helped to reduce poverty in Uganda?"* (web + academic):
 
 | Step | Calls | Cost |
 | --- | ---: | ---: |
 | 🛡️ Safety guard | 1 | $0.0001 |
 | 🧭 Atlas · planning | 1 | $0.0000 |
-| 🔎 Scout · tool choice + findings | 9 | $0.0036 |
-| 🌐 **Web search (OpenRouter plugin)** | 4 | **$0.0310** |
+| 🔎 Scout · tool choice + findings | 9 | $0.0039 |
+| 🌐 **Web search (OpenRouter plugin)** | 5 | **$0.0385** |
 | 🔬 Prism · analysis | 1 | $0.0004 |
-| ✍️ Quill · writing | 1 | $0.0009 |
+| ✍️ Quill · writing | 1 | $0.0008 |
 | 🛡️ Sentinel · review | 1 | $0.0002 |
-| **Total** (61 s, 36k tokens) | **18** | **$0.036** |
+| **Total** (61 s, 41k tokens) | **19** | **$0.044** |
 
-> 💡 **About 86% of the cost is web search, not the LLMs.** The best ways to cut cost are
+> 💡 **About 88% of the cost is web search, not the LLMs.** The best ways to cut cost are
 > Tavily (cheaper per search), a lower `SEARCH_MAX_RESULTS`, or unticking Web for
 > academic-only topics. A cheaper model would save little.
 
