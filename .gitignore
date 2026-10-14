@@ -1,0 +1,29 @@
+# Secrets: never commit these
+.env
+.env.*
+!.env.example
+
+# Local data: research history, accounts, uploaded documents, vector indexes
+data/
+knowledge_db/
+memory_db/
+chroma_db/
+*.sqlite
+*.sqlite-shm
+*.sqlite-wal
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.pytest_cache/
+
+# IDE and tools
+.vscode/
+.idea/
+.claude/
+
+# OS
+.DS_Store
+Thumbs.db

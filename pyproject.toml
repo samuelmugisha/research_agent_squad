@@ -1,0 +1,24 @@
+[project]
+name = "research-agent-squad"
+version = "0.1.0"
+description = "Multi-agent research assistant (LangGraph): five AI agents search the web, academic papers and your documents, then write and review cited reports."
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "langchain-community>=0.4.1",
+    "langchain>=1.2.7",
+    "langchain-core>=1.2.7",
+    "langchain-openai>=1.1.7",
+    "langgraph>=1.0.7",
+    "python-dotenv>=1.2.1",
+    "pypdf>=6.6.2",
+    "langchain-chroma>=1.1.0",
+    "langgraph-checkpoint-sqlite>=3.0.3",
+    "pytest>=9.0.2",
+    "fastapi>=0.129.0",
+    "uvicorn>=0.40.0",
+    "python-multipart>=0.0.32",
+    "huggingface-hub>=1.4.0",
+    "httpx>=0.28",
+    "langsmith>=0.6.6",
+]

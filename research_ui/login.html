@@ -1,0 +1,397 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sign in · Research Agent Squad</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #070f20;
+    --panel: #101d36;
+    --panel-2: #152441;
+    --border: #1f3052;
+    --border-strong: #2c4170;
+    --text: #f3f6fb;
+    --muted: #aebbd2;
+    --faint: #8090ab;
+    --prompt: #9b6cf0;
+    --ok: #2fd18e;
+    --err: #ef6a6a;
+    --mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+    --sans: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; min-height: 100%; }
+  body {
+    background:
+      radial-gradient(900px 600px at 8% -10%, rgba(155, 108, 240, .22), transparent 60%),
+      radial-gradient(800px 600px at 105% 110%, rgba(91, 155, 213, .18), transparent 60%),
+      var(--bg);
+    color: var(--text);
+    font-family: var(--sans);
+    font-size: 15px;
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+    min-height: 100vh;
+  }
+  /* faint lab-notebook grid */
+  body::before {
+    content: ""; position: fixed; inset: 0; pointer-events: none;
+    background-image: linear-gradient(rgba(255,255,255,.035) 1px, transparent 1px),
+                      linear-gradient(90deg, rgba(255,255,255,.035) 1px, transparent 1px);
+    background-size: 44px 44px;
+    mask-image: radial-gradient(ellipse at 40% 40%, #000 30%, transparent 75%);
+  }
+
+  .page {
+    position: relative; min-height: 100vh; max-width: 1240px; margin: 0 auto;
+    display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
+    gap: 48px; align-items: center; padding: 40px 32px;
+  }
+
+  /* ---------- Story side ---------- */
+  .brand { display: inline-flex; align-items: center; gap: 10px; font-weight: 600; font-size: 16px; }
+  .brand .icon {
+    font-family: var(--mono); font-size: 13px; color: var(--prompt);
+    background: rgba(155,108,240,.12); border: 1px solid rgba(155,108,240,.35);
+    border-radius: 8px; padding: 3px 7px;
+  }
+  .story h1 {
+    margin: 28px 0 14px; font-size: clamp(34px, 4.4vw, 54px); line-height: 1.06;
+    letter-spacing: -0.025em; font-weight: 700;
+  }
+  .story h1 .glow {
+    background: linear-gradient(90deg, #c9a7ff, #7fb5ea 55%, #5fe0ad);
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+  }
+  .story .lede { margin: 0; color: var(--muted); font-size: 17px; max-width: 540px; }
+
+  .stage { position: relative; margin-top: 28px; max-width: 560px; }
+  .stage svg { width: 100%; height: auto; display: block; overflow: visible; }
+  .node circle.ring { fill: #0d1830; stroke-width: 2; }
+  .node .halo { opacity: .18; animation: breathe 3.6s ease-in-out infinite; transform-box: fill-box; transform-origin: center; }
+  .node text.name { fill: var(--text); font: 600 13px var(--sans); text-anchor: middle; }
+  .node text.role { fill: var(--faint); font: 400 10.5px var(--mono); text-anchor: middle; }
+  .node text.glyph { font: 600 15px var(--mono); text-anchor: middle; dominant-baseline: central; }
+  .edge { fill: none; stroke: var(--border-strong); stroke-width: 1.5; }
+  .edge.flow { stroke-dasharray: 4 7; animation: flow 1.6s linear infinite; }
+  .core rect { fill: rgba(16,29,54,.9); stroke: var(--border-strong); }
+  .core text { fill: var(--muted); font: 500 11px var(--mono); text-anchor: middle; }
+  .core .cite { fill: var(--ok); }
+  @keyframes flow { to { stroke-dashoffset: -22; } }
+  @keyframes breathe { 0%, 100% { transform: scale(1); opacity: .14; } 50% { transform: scale(1.18); opacity: .28; } }
+
+  .chip {
+    position: absolute; font: 500 11.5px var(--mono); color: var(--muted);
+    background: rgba(16,29,54,.85); border: 1px solid var(--border-strong);
+    border-radius: 999px; padding: 4px 10px; white-space: nowrap;
+    opacity: 0; animation: chip 9s ease-in-out infinite;
+  }
+  .chip b { color: var(--ok); font-weight: 500; }
+  .chip:nth-of-type(1) { left: -2%; top: 8%; }
+  .chip:nth-of-type(2) { right: -3%; top: 66%; animation-delay: 3s; }
+  .chip:nth-of-type(3) { left: 6%; bottom: 2%; animation-delay: 6s; }
+  @keyframes chip { 0%, 100% { opacity: 0; transform: translateY(6px); } 12%, 40% { opacity: 1; transform: none; } 55% { opacity: 0; } }
+
+  .proof { display: flex; flex-wrap: wrap; gap: 10px 22px; margin: 26px 0 0; padding: 0; list-style: none; color: var(--muted); font-size: 14px; }
+  .proof li { display: flex; align-items: center; gap: 8px; }
+  .proof svg { color: var(--ok); flex: none; }
+
+  /* ---------- Sign-in card ---------- */
+  .card {
+    position: relative; width: 100%; max-width: 440px; justify-self: center;
+    background: linear-gradient(180deg, rgba(21,36,65,.86), rgba(13,24,46,.86));
+    border: 1px solid var(--border-strong); border-radius: 20px; padding: 36px 34px 30px;
+    box-shadow: 0 30px 80px -20px rgba(0,0,0,.6), 0 0 0 1px rgba(155,108,240,.06) inset;
+    backdrop-filter: blur(14px);
+  }
+  .card::before {
+    content: ""; position: absolute; inset: -1px; border-radius: 20px; padding: 1px; pointer-events: none;
+    background: linear-gradient(140deg, rgba(155,108,240,.7), transparent 35%, transparent 65%, rgba(47,209,142,.45));
+    -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor; mask-composite: exclude;
+  }
+  .card.shake { animation: shake .4s; }
+  @keyframes shake { 20%, 60% { transform: translateX(-6px); } 40%, 80% { transform: translateX(6px); } }
+  .card h2 { margin: 0 0 6px; font-size: 26px; font-weight: 600; letter-spacing: -0.01em; }
+  .card .sub { margin: 0 0 26px; color: var(--muted); }
+
+  .field { display: grid; gap: 7px; margin-bottom: 16px; }
+  .field label { font-size: 13px; font-weight: 500; color: var(--muted); }
+  .input-wrap { position: relative; }
+  .field input {
+    width: 100%; font: inherit; color: var(--text); background: rgba(7,15,32,.7);
+    border: 1px solid var(--border-strong); border-radius: 11px; padding: 12px 14px;
+    transition: border-color .15s, box-shadow .15s;
+  }
+  .field input::placeholder { color: #61708c; }
+  .field input:focus { outline: none; border-color: var(--prompt); box-shadow: 0 0 0 4px rgba(155,108,240,.18); }
+  .field input[aria-invalid="true"] { border-color: var(--err); }
+  .input-wrap input { padding-right: 76px; }
+  .reveal {
+    position: absolute; right: 6px; top: 50%; transform: translateY(-50%);
+    background: transparent; border: 0; color: var(--faint); font: 500 12.5px var(--sans);
+    padding: 6px 10px; border-radius: 8px; cursor: pointer;
+  }
+  .reveal:hover, .reveal:focus-visible { color: var(--text); background: var(--panel-2); outline: none; }
+  .hint { min-height: 18px; font-size: 12.5px; color: #f0a14a; }
+
+  .row { display: flex; align-items: center; justify-content: space-between; margin: 4px 0 20px; font-size: 13.5px; color: var(--muted); }
+  .check { display: inline-flex; gap: 8px; align-items: center; cursor: pointer; }
+  .check input { width: 16px; height: 16px; accent-color: var(--prompt); }
+
+  .submit {
+    width: 100%; display: inline-flex; justify-content: center; align-items: center; gap: 10px;
+    border: 0; border-radius: 11px; padding: 13px 18px; cursor: pointer;
+    font: 600 15px var(--sans); color: #fff;
+    background: linear-gradient(135deg, #8b5cf0, #6d7ff0 60%, #4f9fd8);
+    box-shadow: 0 10px 30px -10px rgba(139,92,240,.7);
+    transition: transform .12s, box-shadow .12s, opacity .12s;
+  }
+  .submit:hover:not(:disabled) { transform: translateY(-1px); box-shadow: 0 14px 34px -10px rgba(139,92,240,.85); }
+  .submit:focus-visible { outline: 3px solid rgba(155,108,240,.5); outline-offset: 3px; }
+  .submit:disabled { opacity: .7; cursor: default; }
+  .spinner { width: 15px; height: 15px; border-radius: 50%; border: 2px solid rgba(255,255,255,.35); border-top-color: #fff; animation: spin .8s linear infinite; display: none; }
+  .submit.busy .spinner { display: inline-block; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .error {
+    display: none; margin: 0 0 16px; padding: 10px 12px; border-radius: 10px; font-size: 13.5px;
+    color: #ffd2d2; background: rgba(239,106,106,.12); border: 1px solid rgba(239,106,106,.4);
+  }
+  .error.show { display: block; }
+
+  .roles { margin-top: 26px; padding-top: 20px; border-top: 1px solid var(--border); }
+  .roles p { margin: 0 0 10px; font-size: 12.5px; color: var(--faint); }
+  .role-list { display: flex; flex-wrap: wrap; gap: 6px; }
+  .role-list span {
+    font-size: 12px; color: var(--muted); border: 1px solid var(--border-strong);
+    border-radius: 999px; padding: 3px 10px; background: rgba(7,15,32,.5);
+  }
+  .role-list span::before { content: ""; display: inline-block; width: 6px; height: 6px; border-radius: 50%; margin-right: 6px; vertical-align: 1px; background: var(--c); }
+  .footnote { margin: 18px 0 0; text-align: center; font-size: 12.5px; color: var(--faint); }
+
+  @media (max-width: 920px) {
+    .page { grid-template-columns: minmax(0, 1fr); gap: 28px; padding: 28px 16px 40px; }
+    .story { text-align: left; }
+    .story h1 { margin-top: 20px; }
+    .stage { max-width: 420px; margin-inline: auto; }
+    .chip { display: none; }
+    .card { padding: 28px 22px 24px; }
+  }
+  @media (max-width: 520px) {
+    .stage, .proof { display: none; }
+    .story .lede { font-size: 15.5px; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before { animation: none !important; transition: none !important; }
+    .pulse { display: none; }
+    .chip { opacity: 1; }
+  }
+</style>
+</head>
+<body>
+<main class="page">
+  <section class="story" aria-label="About Research Agent Squad">
+    <div class="brand"><span class="icon">&gt;_</span>Research Agent Squad</div>
+    <h1>Research you can <span class="glow">cite</span>,<br>from a squad of five AI agents.</h1>
+    <p class="lede">Atlas plans, Scouts search the web, journals and your lab's documents,
+      Prism analyses, Quill writes and Sentinel reviews, so every report arrives checked and fully referenced.</p>
+
+    <div class="stage" aria-hidden="true">
+      <svg viewBox="0 -14 520 404" role="presentation">
+        <defs>
+          <filter id="soft" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="6"/></filter>
+          <path id="e1" d="M260 62 Q 360 70 418 158"/>
+          <path id="e2" d="M418 158 Q 430 260 360 318"/>
+          <path id="e3" d="M360 318 Q 260 362 160 318"/>
+          <path id="e4" d="M160 318 Q 90 260 102 158"/>
+          <path id="e5" d="M102 158 Q 160 70 260 62"/>
+        </defs>
+
+        <use href="#e1" class="edge flow"/><use href="#e2" class="edge flow"/>
+        <use href="#e3" class="edge flow"/><use href="#e4" class="edge flow"/>
+        <use href="#e5" class="edge" stroke-dasharray="2 6" opacity=".6"/>
+        <g stroke="#1f3052" stroke-width="1">
+          <line x1="260" y1="92" x2="260" y2="165"/><line x1="390" y1="168" x2="310" y2="190"/>
+          <line x1="340" y1="295" x2="300" y2="232"/><line x1="180" y1="295" x2="220" y2="232"/>
+          <line x1="130" y1="168" x2="210" y2="190"/>
+        </g>
+
+        <circle class="pulse" r="4" fill="#9b6cf0"><animateMotion dur="2.4s" repeatCount="indefinite"><mpath href="#e1"/></animateMotion></circle>
+        <circle class="pulse" r="4" fill="#5b9bd5"><animateMotion dur="2.4s" begin="0.6s" repeatCount="indefinite"><mpath href="#e2"/></animateMotion></circle>
+        <circle class="pulse" r="4" fill="#e07a9a"><animateMotion dur="2.4s" begin="1.2s" repeatCount="indefinite"><mpath href="#e3"/></animateMotion></circle>
+        <circle class="pulse" r="4" fill="#f0a14a"><animateMotion dur="2.4s" begin="1.8s" repeatCount="indefinite"><mpath href="#e4"/></animateMotion></circle>
+        <circle class="pulse" r="3" fill="#2fd18e" opacity=".8"><animateMotion dur="3.2s" begin="0.9s" repeatCount="indefinite"><mpath href="#e5"/></animateMotion></circle>
+
+        <g class="core">
+          <rect x="196" y="166" width="128" height="66" rx="12"/>
+          <text x="260" y="190">cited report</text>
+          <text x="260" y="212" class="cite">[1] [2] [3] ✓</text>
+        </g>
+
+        <g class="node" transform="translate(260 62)">
+          <circle class="halo" r="40" fill="#9b6cf0" filter="url(#soft)"/>
+          <circle class="ring" r="28" stroke="#9b6cf0"/>
+          <text class="glyph" fill="#c9a7ff">A</text>
+          <text class="name" y="-52">Atlas</text>
+          <text class="role" y="-37">plan</text>
+        </g>
+        <g class="node" transform="translate(418 158)">
+          <circle class="halo" r="40" fill="#5b9bd5" filter="url(#soft)" style="animation-delay:.6s"/>
+          <circle class="ring" r="28" stroke="#5b9bd5"/>
+          <text class="glyph" fill="#8fc0ec">S</text>
+          <text class="name" x="52" y="-2">Scout</text>
+          <text class="role" x="52" y="14">search</text>
+        </g>
+        <g class="node" transform="translate(360 318)">
+          <circle class="halo" r="40" fill="#e07a9a" filter="url(#soft)" style="animation-delay:1.2s"/>
+          <circle class="ring" r="28" stroke="#e07a9a"/>
+          <text class="glyph" fill="#f0a8bf">P</text>
+          <text class="name" y="48">Prism</text>
+          <text class="role" y="63">analyse</text>
+        </g>
+        <g class="node" transform="translate(160 318)">
+          <circle class="halo" r="40" fill="#f0a14a" filter="url(#soft)" style="animation-delay:1.8s"/>
+          <circle class="ring" r="28" stroke="#f0a14a"/>
+          <text class="glyph" fill="#f6c27f">Q</text>
+          <text class="name" y="48">Quill</text>
+          <text class="role" y="63">write</text>
+        </g>
+        <g class="node" transform="translate(102 158)">
+          <circle class="halo" r="40" fill="#2fd18e" filter="url(#soft)" style="animation-delay:2.4s"/>
+          <circle class="ring" r="28" stroke="#2fd18e"/>
+          <text class="glyph" fill="#7ee8b9">S</text>
+          <text class="name" x="-58" y="-2">Sentinel</text>
+          <text class="role" x="-58" y="14">review</text>
+        </g>
+      </svg>
+      <span class="chip"><b>[4]</b> Nature Energy · 2025</span>
+      <span class="chip"><b>[7]</b> arXiv preprint</span>
+      <span class="chip"><b>[2]</b> your lab notes, p. 12</span>
+    </div>
+
+    <ul class="proof">
+      <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>Every claim cited</li>
+      <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>Safety-screened requests</li>
+      <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>Role-based lab access</li>
+    </ul>
+  </section>
+
+  <section class="card" id="card" aria-labelledby="signinTitle">
+    <h2 id="signinTitle">Sign in to your lab</h2>
+    <p class="sub">Welcome back. Your squad is ready when you are.</p>
+
+    <div class="error" id="error" role="alert" aria-live="assertive"></div>
+
+    <form id="form" novalidate>
+      <div class="field">
+        <label for="username">Username</label>
+        <input id="username" name="username" autocomplete="username" autocapitalize="none" spellcheck="false"
+               placeholder="e.g. a.okafor@lab.org" required maxlength="80">
+      </div>
+      <div class="field">
+        <label for="password">Password</label>
+        <div class="input-wrap">
+          <input id="password" name="password" type="password" autocomplete="current-password"
+                 placeholder="Your password" required maxlength="200">
+          <button class="reveal" id="reveal" type="button" aria-controls="password" aria-pressed="false">Show</button>
+        </div>
+        <div class="hint" id="capsHint" aria-live="polite"></div>
+      </div>
+      <div class="row">
+        <label class="check"><input type="checkbox" id="remember"> Keep me signed in for 30 days</label>
+      </div>
+      <button class="submit" id="submit" type="submit"><span class="spinner" aria-hidden="true"></span><span id="submitText">Sign in</span></button>
+    </form>
+
+    <div class="roles">
+      <p>Access is role-based. What you can do depends on your role:</p>
+      <div class="role-list">
+        <span style="--c:#9b6cf0">Principal Investigator</span>
+        <span style="--c:#5b9bd5">Research Officer</span>
+        <span style="--c:#f0a14a">Research Associate</span>
+        <span style="--c:#8090ab">Guest Reviewer</span>
+      </div>
+    </div>
+    <p class="footnote">Accounts are by invitation. Ask your Principal Investigator for access.</p>
+  </section>
+</main>
+
+<script>
+const $ = (id) => document.getElementById(id);
+
+// Only follow same-site paths after signing in (never //evil.com or URLs)
+function nextPath() {
+  const next = new URLSearchParams(location.search).get("next") || "/";
+  return next.startsWith("/") && !next.startsWith("//") ? next : "/";
+}
+
+function showError(message) {
+  const box = $("error");
+  box.textContent = message;
+  box.classList.add("show");
+  const card = $("card");
+  card.classList.remove("shake");
+  void card.offsetWidth;
+  card.classList.add("shake");
+}
+
+$("reveal").addEventListener("click", () => {
+  const input = $("password");
+  const show = input.type === "password";
+  input.type = show ? "text" : "password";
+  $("reveal").textContent = show ? "Hide" : "Show";
+  $("reveal").setAttribute("aria-pressed", String(show));
+  input.focus();
+});
+
+$("password").addEventListener("keyup", (e) => {
+  $("capsHint").textContent = e.getModifierState && e.getModifierState("CapsLock") ? "Caps Lock is on." : "";
+});
+
+$("form").addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const username = $("username").value.trim();
+  const password = $("password").value;
+  $("username").setAttribute("aria-invalid", String(!username));
+  $("password").setAttribute("aria-invalid", String(!password));
+  if (!username || !password) {
+    showError("Enter your username and password.");
+    (username ? $("password") : $("username")).focus();
+    return;
+  }
+
+  $("error").classList.remove("show");
+  $("submit").disabled = true;
+  $("submit").classList.add("busy");
+  $("submitText").textContent = "Signing in…";
+  try {
+    const res = await fetch("/api/auth/login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      credentials: "same-origin",
+      body: JSON.stringify({ username, password, remember: $("remember").checked }),
+    });
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) throw new Error(typeof data.detail === "string" ? data.detail : "Sign-in failed. Please try again.");
+    $("submitText").textContent = `Welcome, ${data.user.name.split(" ")[0]}`;
+    location.replace(nextPath());
+  } catch (err) {
+    showError(err.message === "Failed to fetch" ? "Can't reach the server. Check your connection." : err.message);
+    $("password").value = "";
+    $("password").setAttribute("aria-invalid", "true");
+    $("password").focus();
+    $("submit").disabled = false;
+    $("submit").classList.remove("busy");
+    $("submitText").textContent = "Sign in";
+  }
+});
+
+$("username").focus();
+</script>
+</body>
+</html>

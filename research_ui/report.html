@@ -1,0 +1,229 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Research Report</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/marked@12.0.2/marked.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/dompurify@3.1.6/dist/purify.min.js"></script>
+<style>
+  :root {
+    --bg: #0a1428;
+    --paper: #101d36;
+    --border: #1f3052;
+    --text: #f3f6fb;
+    --body: #dde5f1;
+    --muted: #aebbd2;
+    --faint: #8090ab;
+    --link: #8fb6e8;
+    --accent: #9b6cf0;
+    --kb: #2fd18e;
+    --paper-tag: #c9a7ff;
+    --mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+    --sans: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; }
+  body { background: var(--bg); color: var(--text); font-family: var(--sans); font-size: 16px; line-height: 1.65; -webkit-font-smoothing: antialiased; }
+  .page { max-width: 820px; margin: 0 auto; padding: 24px 16px 64px; }
+  .toolbar { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 20px; }
+  .brand { flex: 1; font-weight: 600; font-size: 14px; color: var(--muted); white-space: nowrap; }
+  .brand span { color: var(--accent); font-family: var(--mono); margin-right: 8px; }
+  .btn {
+    background: var(--paper); color: var(--text); border: 1px solid var(--border); border-radius: 8px;
+    padding: 7px 14px; font: inherit; font-size: 14px; cursor: pointer; text-decoration: none;
+  }
+  .btn:hover { border-color: #2c4170; }
+  .btn.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+  article { background: var(--paper); border: 1px solid var(--border); border-radius: 14px; padding: 32px 36px; }
+  @media (max-width: 640px) { article { padding: 22px 18px; } }
+  .meta { display: flex; flex-wrap: wrap; gap: 8px; margin: 0 0 8px; }
+  .meta span { font-size: 13px; color: var(--muted); border: 1px solid var(--border); border-radius: 999px; padding: 2px 10px; }
+  .report h1 { font-size: 28px; line-height: 1.25; font-weight: 600; margin: 8px 0 14px; }
+  .report h2 { font-size: 20px; font-weight: 600; margin: 30px 0 10px; }
+  .report h3 { font-size: 17px; font-weight: 600; margin: 22px 0 8px; }
+  .report p, .report li { color: var(--body); }
+  .report ul, .report ol { padding-left: 24px; }
+  .report li { margin: 4px 0; }
+  .report a { color: var(--link); }
+  .report code { font-family: var(--mono); font-size: 14px; background: var(--bg); padding: 1px 5px; border-radius: 4px; }
+  a.cite { font-family: var(--mono); font-size: .7em; vertical-align: super; line-height: 0; text-decoration: none; padding: 0 1px; color: var(--link); }
+  a.cite.academic { color: var(--paper-tag); }
+  a.cite.kb { color: var(--kb); }
+  .sources { margin-top: 36px; padding-top: 20px; border-top: 1px solid var(--border); }
+  .sources h2 { font-size: 20px; font-weight: 600; margin: 0 0 12px; }
+  .sources ol { margin: 0; padding-left: 28px; display: grid; gap: 10px; }
+  .sources li { color: var(--faint); font-size: 14px; }
+  .sources li:target { background: color-mix(in srgb, var(--accent) 15%, transparent); border-radius: 6px; }
+  .sources a { color: var(--link); text-decoration: none; overflow-wrap: anywhere; }
+  .sources a:hover { text-decoration: underline; }
+  .src-title { color: var(--text); }
+  .detail { display: block; font-family: var(--mono); font-size: 12px; color: var(--faint); overflow-wrap: anywhere; }
+  .tag { font-family: var(--mono); font-size: 11px; border: 1px solid currentColor; border-radius: 999px; padding: 0 7px; margin-left: 8px; }
+  .tag.kb { color: var(--kb); }
+  .tag.academic { color: var(--paper-tag); }
+  .tag.memory { color: #b7791f; }
+  footer { margin-top: 20px; text-align: center; font-size: 13px; color: var(--faint); }
+  .state { color: var(--muted); padding: 60px 0; text-align: center; }
+
+  @media print {
+    @page { margin: 16mm 16mm 18mm; }
+    :root { --text: #111; --body: #222; --muted: #555; --faint: #666; --link: #1a4fa0; --paper-tag: #6b3fc4; --kb: #137a50; --border: #ccc; }
+    body { background: #fff; font-size: 11pt; line-height: 1.5; }
+    .page { max-width: none; padding: 0; }
+    .toolbar, footer .no-print { display: none !important; }
+    article { background: none; border: 0; border-radius: 0; padding: 0; }
+    .meta span { border-color: #ccc; }
+    .report h1 { font-size: 20pt; }
+    .report h2, .sources h2 { font-size: 14pt; break-after: avoid; }
+    .report h3 { font-size: 12pt; break-after: avoid; }
+    .report li, .sources li { break-inside: avoid; }
+    .report a { text-decoration: none; }
+    footer { margin-top: 12mm; font-size: 9pt; }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+  <div class="toolbar" id="toolbar" hidden>
+    <div class="brand"><span>&gt;_</span>Research Agent Squad</div>
+    <a class="btn" id="mdLink" href="#">Download Markdown</a>
+    <button class="btn primary" id="pdfBtn" type="button">Save as PDF</button>
+  </div>
+  <div id="content"><p class="state">Loading report…</p></div>
+  <footer id="footer" hidden>Researched by Research Agent Squad<span class="no-print"> · shared read-only copy</span></footer>
+</div>
+
+<script>
+const el = (tag, cls, text) => {
+  const n = document.createElement(tag);
+  if (cls) n.className = cls;
+  if (text != null) n.textContent = text;
+  return n;
+};
+const hostname = (url) => { try { return new URL(url).hostname.replace(/^www\./, ""); } catch { return url; } };
+
+// /share/<token>  -> public read-only copy
+// /runs/<id>/print -> print view used by the app's PDF export
+const share = location.pathname.match(/^\/share\/([^/]+)$/);
+const printView = location.pathname.match(/^\/runs\/([^/]+)\/print$/);
+const api = share ? `/api/share/${share[1]}` : printView ? `/api/runs/${printView[1]}/document` : null;
+const embedded = window.parent !== window;
+
+// [3] or [2][5] or [1, 4] -> links to the matching entry in the Sources list
+function linkCitations(md, sources) {
+  const byId = Object.fromEntries(sources.map((s) => [s.id, s]));
+  return md.replace(/\[(\d+(?:\s*,\s*\d+)*)\](?!\()/g, (match, nums) => {
+    const ids = nums.split(/\s*,\s*/).map(Number);
+    if (!ids.every((id) => byId[id])) return match;
+    return ids.map((id) => `[[${id}]](#src-${id})`).join("");
+  });
+}
+
+function render(doc) {
+  document.title = doc.topic;
+  const article = el("article");
+
+  const created = new Date(doc.created_at);
+  const meta = el("div", "meta");
+  const papers = doc.sources.filter((s) => s.kind === "academic").length;
+  [
+    created.toLocaleDateString([], { year: "numeric", month: "long", day: "numeric" }),
+    `${doc.sources.length} sources`,
+    papers ? `${papers} academic papers` : null,
+    doc.quality != null ? `quality score ${doc.quality.toFixed(2)}` : null,
+  ].filter(Boolean).forEach((text) => meta.append(el("span", null, text)));
+
+  let md = doc.report.trim();
+  if (!md.startsWith("# ")) md = `# ${doc.topic}\n\n${md}`;
+  const report = el("div", "report");
+  if (window.marked && window.DOMPurify) {
+    report.innerHTML = DOMPurify.sanitize(marked.parse(linkCitations(md, doc.sources)));
+  } else {
+    report.append(el("pre", null, md));
+  }
+
+  // Put the meta pills right under the report title
+  const h1 = report.querySelector("h1");
+  h1 ? h1.after(meta) : report.prepend(meta);
+
+  const kinds = Object.fromEntries(doc.sources.map((s) => [s.id, s.kind]));
+  report.querySelectorAll("a").forEach((a) => {
+    const cite = a.textContent.match(/^\[(\d+)\]$/);
+    if (cite && a.getAttribute("href") === `#src-${cite[1]}`) {
+      a.className = `cite ${kinds[cite[1]] || "web"}`;
+    } else {
+      a.target = "_blank";
+      a.rel = "noopener noreferrer";
+    }
+  });
+  article.append(report);
+
+  if (doc.sources.length) {
+    const section = el("section", "sources");
+    section.append(el("h2", null, "Sources"));
+    const ol = el("ol");
+    doc.sources.forEach((s) => {
+      const li = el("li");
+      li.id = `src-${s.id}`;
+      li.value = s.id;
+      if (s.url && /^https?:\/\//.test(s.url)) {
+        const a = el("a", null, s.title);
+        a.href = s.url;
+        a.target = "_blank";
+        a.rel = "noopener noreferrer";
+        li.append(a);
+      } else {
+        li.append(el("span", "src-title", s.title));
+      }
+      if (s.kind === "kb") li.append(el("span", "tag kb", "private document"));
+      if (s.kind === "academic") li.append(el("span", "tag academic", /arxiv/i.test(s.meta) ? "preprint" : "journal"));
+      if (s.kind === "memory") li.append(el("span", "tag memory", "earlier report"));
+      const detail = s.kind === "kb" ? "From the author's knowledge base"
+        : s.kind === "memory" ? `Earlier research by the squad${s.meta ? " · " + s.meta : ""}`
+        : s.kind === "academic" ? `${s.meta} · ${hostname(s.url)}` : s.url;
+      li.append(el("span", "detail", detail));
+      ol.append(li);
+    });
+    section.append(ol);
+    article.append(section);
+  }
+
+  document.getElementById("content").replaceChildren(article);
+  document.getElementById("footer").hidden = false;
+  if (!share) document.querySelector("footer .no-print").remove();
+  if (!embedded) {
+    document.getElementById("toolbar").hidden = false;
+    const mdUrl = share ? `/api/share/${share[1]}/export.md?download=1` : `/api/runs/${printView[1]}/export.md?download=1`;
+    document.getElementById("mdLink").href = mdUrl;
+  }
+}
+
+document.getElementById("pdfBtn").onclick = () => window.print();
+
+async function load() {
+  try {
+    if (!api) throw new Error("Report not found.");
+    const res = await fetch(api);
+    if (!res.ok) {
+      let message = `Server returned ${res.status}`;
+      try { message = (await res.json()).detail || message; } catch {}
+      throw new Error(message);
+    }
+    render(await res.json());
+    await document.fonts.ready;
+    // The app's PDF export loads this page in a hidden frame and prints it
+    if (embedded) window.parent.postMessage({ type: "report-ready" }, location.origin);
+  } catch (err) {
+    document.getElementById("content").replaceChildren(el("p", "state", err.message));
+    if (embedded) window.parent.postMessage({ type: "report-error", message: err.message }, location.origin);
+  }
+}
+load();
+</script>
+</body>
+</html>
