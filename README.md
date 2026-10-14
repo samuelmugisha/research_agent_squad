@@ -22,7 +22,7 @@ and review it before you see it.
 
 [🚀 Quick start](#quick-start) · [🏗️ Architecture](#architecture) · [🖼️ Screenshots](#screenshots) · [🔐 Security](#security) · [🧪 Evaluation](#evaluation-suite) · [📋 Requirements](#requirements)
 
-<img src="docs/images/report.png" alt="A finished research report with numbered citations, quality score, cost and export options" width="900">
+<img src="docs/images/report.png" alt="A finished report on how digitalisation has helped reduce poverty in Uganda, with numbered citations, quality score, cost and export options" width="900">
 
 </div>
 
@@ -388,7 +388,7 @@ On the **Knowledge Base** tab:
 ### 🧪 Check quality
 
 Open **Evaluation** and press **Run evaluation**. Eleven checks run in the background
-(about 35 seconds, under $0.01) and the table fills in live. Click any row for its
+(about 30 seconds, under $0.01) and the table fills in live. Click any row for its
 individual test cases. See [Evaluation suite](#evaluation-suite).
 
 ### 📤 History, export and sharing
@@ -648,15 +648,15 @@ live; click a row for each test case (expected vs got), run time and cost.
 | 🟢 | Security unit tests | Deterministic | Guard, rate limits, delimiting, API error codes | 22/22 tests passed |
 | 🟢 | Cost tracking unit tests | Deterministic | Per-step token and cost tracking | 7/7 tests passed |
 | 🟢 | Prompt-injection patterns | Deterministic | 10 attacks blocked, 10 security-themed research topics allowed | 10/10 caught, 0 false positives |
-| 🟢 | Citation integrity | Deterministic | Saved reports: every `[n]` points to a real source; bullets carry citations | 0 invalid, 74% of bullets cited |
-| 🟢 | Sentinel quality scores | Deterministic | Saved reports: average score, approvals without revision | Average 0.83 |
+| 🟢 | Citation integrity | Deterministic | Saved reports: every `[n]` points to a real source; bullets carry citations | 0 invalid, 73% of bullets cited |
+| 🟢 | Sentinel quality scores | Deterministic | Saved reports: average score, approvals without revision | Average 0.81 |
 | 🟢 | Safety guard accuracy | LLM | 13 labelled requests (sensitive research vs abuse) | 100% correct |
 | 🟢 | Tool-choice accuracy | LLM | Scout's function calling on 7 labelled queries | 7/7 correct |
 | 🟢 | Injection resistance | LLM | Instructions planted in search results, incl. a fake `</source>` tag | Resisted 3/3 |
-| 🟢 | Faithfulness | LLM Judge | A judge checks up to 8 key claims per report against its findings | Average 0.85 |
+| 🟢 | Faithfulness | LLM Judge | A judge checks up to 8 key claims per report against its findings | Average 0.98 |
 | 🟢 | Judge calibration | LLM Judge | The judge must score a faithful report high and a corrupted one low | 1.00 vs 0.31 |
 
-**Latest full run (gpt-4o-mini): ✅ 11/11 passed in 35 seconds for $0.0037.**
+**Latest full run (gpt-4o-mini), on four reports about Uganda and Africa: ✅ 11/11 passed in 30 seconds for $0.0037.**
 
 > 🧑‍⚖️ **Why judge calibration?** An LLM judge is itself a model that can be wrong. Before
 > trusting its faithfulness scores, the suite checks it on a fixed pair of reports where
