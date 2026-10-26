@@ -173,6 +173,16 @@
   }
   .role-list span::before { content: ""; display: inline-block; width: 6px; height: 6px; border-radius: 50%; margin-right: 6px; vertical-align: 1px; background: var(--c); }
   .footnote { margin: 18px 0 0; text-align: center; font-size: 12.5px; color: var(--faint); }
+  .course-link {
+    display: flex; align-items: center; gap: 12px; margin-top: 16px; padding: 12px 14px;
+    border: 1px solid var(--border-strong); border-radius: 12px; background: rgba(7,15,32,.5);
+    color: var(--muted); text-decoration: none; font-size: 13px; line-height: 1.45;
+    transition: border-color .15s, color .15s;
+  }
+  .course-link b { color: var(--text); font-weight: 600; font-size: 13.5px; }
+  .course-link svg { color: var(--ok); flex: none; }
+  .course-link .arrow { margin-left: auto; color: var(--faint); }
+  .course-link:hover, .course-link:focus-visible { border-color: var(--ok); color: var(--text); outline: none; }
 
   @media (max-width: 920px) {
     .page { grid-template-columns: minmax(0, 1fr); gap: 28px; padding: 28px 16px 40px; }
@@ -318,6 +328,11 @@
       </div>
     </div>
     <p class="footnote">Accounts are by invitation. Ask your Principal Investigator for access.</p>
+    <a class="course-link" href="/course" target="_blank" rel="noopener">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 4h7a3 3 0 0 1 3 3v13a2 2 0 0 0-2-2H2z"/><path d="M22 4h-7a3 3 0 0 0-3 3v13a2 2 0 0 1 2-2h8z"/></svg>
+      <span><b>New here? Take the interactive course</b><br>Learn how the five agents, tools and safety checks work</span>
+      <span class="arrow" aria-hidden="true">↗</span>
+    </a>
   </section>
 </main>
 

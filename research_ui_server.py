@@ -47,6 +47,7 @@ from web_search import search_provider
 UI_FILE = Path(__file__).parent / "research_ui" / "index.html"
 REPORT_PAGE = Path(__file__).parent / "research_ui" / "report.html"
 LOGIN_PAGE = Path(__file__).parent / "research_ui" / "login.html"
+COURSE_PAGE = Path(__file__).parent / "research_ui" / "course.html"
 
 log = logging.getLogger("uvicorn.error")
 
@@ -122,8 +123,9 @@ async def security_headers(request: Request, call_next):
 # Authentication and access control (see auth.py)
 # ============================================================
 
-# Reachable without signing in: the login page, and public share links
-PUBLIC_PATHS = {"/login", "/api/auth/login", "/favicon.ico"}
+# Reachable without signing in: the login page, the course (learning material,
+# no data), and public share links
+PUBLIC_PATHS = {"/login", "/api/auth/login", "/favicon.ico", "/course"}
 PUBLIC_PREFIXES = ("/share/", "/api/share/")
 # Allowed while a temporary password still has to be changed
 PASSWORD_CHANGE_PATHS = {"/", "/api/auth/me", "/api/auth/password", "/api/auth/logout"}
@@ -430,6 +432,12 @@ def stream_events(events: queue.Queue):
 @app.get("/")
 def index():
     return FileResponse(UI_FILE)
+
+
+@app.get("/course")
+def course_page():
+    """Interactive course that teaches how this codebase works."""
+    return FileResponse(COURSE_PAGE)
 
 
 @app.get("/login")

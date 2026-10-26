@@ -46,6 +46,7 @@ def test_apis_require_sign_in(path):
 def test_login_page_and_share_links_stay_public():
     client = anonymous()
     assert client.get("/login").status_code == 200
+    assert client.get("/course").status_code == 200
     assert client.get("/api/share/not-a-token").status_code == 404  # public route, unknown token
 
 

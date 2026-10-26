@@ -46,6 +46,7 @@ APP_FILES = [
     "research_ui/index.html",
     "research_ui/report.html",
     "research_ui/login.html",
+    "research_ui/course.html",
     "pyproject.toml",
     "uv.lock",
 ]
